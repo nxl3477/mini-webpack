@@ -1,0 +1,30 @@
+(function(moduleMap){
+
+  function require (moduleId) {  
+    const [ fn, mapping ] = moduleMap[moduleId]
+    const module = {
+      exports: {}
+    };
+
+
+    function localRequire(filePath) {
+      const id = mapping[filePath]
+      return require(id)
+    }
+  
+    fn(localRequire, module, module.exports)
+  
+    return module.exports
+  }
+
+
+  require(0)
+
+}({
+  <% ejsData.forEach(info => { %>
+      "<%= info["id"] %>": [function (require, module, exports) {
+        <%- info["code"] %>
+      }, <%- JSON.stringify(info["mapping"])  %> ],
+  <% }) %>
+}))
+
